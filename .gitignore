@@ -1,0 +1,29 @@
+# ─── Python ───
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+*.db
+
+# ─── Node / Next.js ───
+node_modules/
+.next/
+out/
+
+# ─── Env ───
+.env
+.env.local
+.env.production
+
+# ─── Uploads ───
+uploads/
+_incoming/
+
+# ─── OS ───
+.DS_Store
+Thumbs.db
+
+# ─── IDE ───
+.vscode/
+.idea/
