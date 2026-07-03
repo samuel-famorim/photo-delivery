@@ -21,17 +21,22 @@ async def lifespan(app: FastAPI):
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
 
-    # Seed default admin user
+    # Seed default users
     async with async_session_factory() as db:
-        result = await db.execute(select(User).where(User.email == "admin@photodelivery.com"))
-        if not result.scalar_one_or_none():
-            db.add(User(
-                email="admin@photodelivery.com",
-                password_hash=get_password_hash("1234"),
-                name="Admin",
-                role="admin",
-            ))
-            await db.commit()
+        seed_users = [
+            ("admin@photodelivery.com", "1234", "Admin"),
+            ("comunica@dacom.ufu", "ativacao@123", "Comunica UFU"),
+        ]
+        for email, password, name in seed_users:
+            result = await db.execute(select(User).where(User.email == email))
+            if not result.scalar_one_or_none():
+                db.add(User(
+                    email=email,
+                    password_hash=get_password_hash(password),
+                    name=name,
+                    role="admin",
+                ))
+        await db.commit()
 
     Path(settings.UPLOAD_FOLDER).mkdir(parents=True, exist_ok=True)
     Path(settings.WATCH_FOLDER).mkdir(parents=True, exist_ok=True)
