@@ -1,7 +1,7 @@
 import { getToken, refreshAccessToken, clearAuth } from "@/lib/auth";
 
 /** Single source for the API base URL. Empty = same origin (Docker/Nginx). */
-export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
 
 /** Full base including /api/v1 prefix — use for constructing fetch URLs. */
 function apiBase(): string {
