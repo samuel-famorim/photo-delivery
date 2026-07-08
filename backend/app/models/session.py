@@ -19,8 +19,8 @@ class Session(Base):
     visitor_email: Mapped[Optional[str]] = mapped_column(String(255))
     status: Mapped[str] = mapped_column(String(20), default="active")
     qr_code_url: Mapped[Optional[str]] = mapped_column(String(500))
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(timezone.utc))
-    completed_at: Mapped[Optional[datetime]] = mapped_column(DateTime)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
+    completed_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True))
 
     event = relationship("Event", back_populates="sessions")
     photos = relationship("Photo", back_populates="session", cascade="all, delete-orphan")

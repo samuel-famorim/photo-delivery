@@ -17,7 +17,7 @@ class Download(Base):
     download_type: Mapped[str] = mapped_column(String(20), nullable=False)
     ip_address: Mapped[Optional[str]] = mapped_column(String(45))
     user_agent: Mapped[Optional[str]] = mapped_column(Text)
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(timezone.utc))
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
 
     photo = relationship("Photo", back_populates="downloads")
     session = relationship("Session", back_populates="downloads")
