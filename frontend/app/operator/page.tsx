@@ -6,7 +6,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Camera, User, Clock, Image, ArrowLeft, CheckCircle, MonitorPlay } from "lucide-react";
+import { Camera, User, Clock, Image, ArrowLeft, CheckCircle, MonitorPlay, LayoutDashboard, CalendarDays } from "lucide-react";
+import Link from "next/link";
 import { QRCodeSVG } from "qrcode.react";
 import { apiFetch, API_BASE_URL, extractErrorMessage } from "@/lib/api-client";
 import { resolveTheme, applyTheme } from "@/lib/theme";
@@ -122,6 +123,32 @@ export default function OperatorPage() {
 
   return (
     <div className="min-h-screen bg-gray-950 text-white">
+      {/* Top Navigation Bar */}
+      <div className="border-b border-white/10 bg-gray-900/80 backdrop-blur sticky top-0 z-50">
+        <div className="max-w-2xl mx-auto px-6 h-12 flex items-center justify-between">
+          <div className="flex items-center gap-1">
+            <Link href="/dashboard" className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm text-gray-400 hover:text-white hover:bg-white/5 transition-colors">
+              <LayoutDashboard className="w-4 h-4" />
+              <span className="hidden sm:inline">Dashboard</span>
+            </Link>
+            <span className="text-gray-600">/</span>
+            <Link href="/events" className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm text-gray-400 hover:text-white hover:bg-white/5 transition-colors">
+              <CalendarDays className="w-4 h-4" />
+              <span className="hidden sm:inline">Eventos</span>
+            </Link>
+            <span className="text-gray-600">/</span>
+            <span className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm text-white font-medium">
+              <Camera className="w-4 h-4" />
+              Operador
+            </span>
+          </div>
+          <Link href="/tv" className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm text-blue-400 hover:text-blue-300 hover:bg-blue-500/10 transition-colors">
+            <MonitorPlay className="w-4 h-4" />
+            <span className="hidden sm:inline">TV</span>
+          </Link>
+        </div>
+      </div>
+
       <div className="max-w-2xl mx-auto p-6">
         <div className="flex items-center justify-between mb-8">
           <div className="flex items-center gap-3">
