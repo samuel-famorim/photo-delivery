@@ -1,7 +1,7 @@
 from __future__ import annotations
 import shutil
 import uuid as uuid_lib
-from fastapi import APIRouter, Depends, HTTPException, Query, status, UploadFile, File
+from fastapi import APIRouter, Depends, HTTPException, Query, Request, status, UploadFile, File
 from fastapi.responses import FileResponse
 from pathlib import Path
 from ...core.config import get_settings
@@ -115,7 +115,7 @@ async def move_photo(
 
 
 @router.get("/{photo_id}/download")
-async def download_photo(photo_id: str, db: AsyncSession = Depends(get_db)):
+async def download_photo(photo_id: str, db: AsyncSession = Depends(get_db), request: Request = None):
     photo = await db.get(Photo, photo_id)
     if not photo:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Photo not found")
@@ -123,6 +123,17 @@ async def download_photo(photo_id: str, db: AsyncSession = Depends(get_db)):
     import os
     if not os.path.exists(photo.file_path):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="File not found on disk")
+
+    from ...models.download import Download as DownloadModel
+    download = DownloadModel(
+        photo_id=photo_id,
+        session_id=photo.session_id,
+        download_type="single",
+        ip_address=request.client.host if request and request.client else None,
+        user_agent=request.headers.get("user-agent") if request else None,
+    )
+    db.add(download)
+    await db.commit()
 
     return FileResponse(
         photo.file_path,
