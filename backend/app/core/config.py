@@ -6,6 +6,7 @@ class Settings(BaseSettings):
     DATABASE_URL: str = "postgresql+asyncpg://postgres:postgres@localhost:5432/photodelivery"
     SECRET_KEY: str = "change-me-in-production-min-32-chars-long"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 15
+    EVENT_TOKEN_EXPIRE_MINUTES: int = 720
     REFRESH_TOKEN_EXPIRE_DAYS: int = 7
     WATCH_FOLDER: str = "./uploads/_incoming"
     UPLOAD_FOLDER: str = "./uploads"

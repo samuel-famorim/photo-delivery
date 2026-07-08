@@ -24,6 +24,7 @@ services:
       DATABASE_URL: postgresql+asyncpg://photodelivery:${DB_PASSWORD:-change-me-in-production}@db:5432/photodelivery
       SECRET_KEY: ${SECRET_KEY}
       ACCESS_TOKEN_EXPIRE_MINUTES: "15"
+      EVENT_TOKEN_EXPIRE_MINUTES: "720"
       REFRESH_TOKEN_EXPIRE_DAYS: "7"
       WATCH_FOLDER: /app/uploads/_incoming
       UPLOAD_FOLDER: /app/uploads

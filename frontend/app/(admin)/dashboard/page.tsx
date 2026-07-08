@@ -2,9 +2,10 @@
 
 import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ErrorState } from "@/components/ui/error-state";
-import { Users, Image, Download, HardDrive, Camera, BarChart3 } from "lucide-react";
+import { Users, Image, Download, HardDrive, Camera, BarChart3, Key, Copy, Check } from "lucide-react";
 import { apiFetch } from "@/lib/api-client";
 import { cn } from "@/lib/utils";
 
@@ -12,6 +13,9 @@ export default function DashboardPage() {
   const [stats, setStats] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [eventToken, setEventToken] = useState<string | null>(null);
+  const [tokenLoading, setTokenLoading] = useState(false);
+  const [copied, setCopied] = useState(false);
 
   async function load() {
     setLoading(true);
@@ -24,6 +28,25 @@ export default function DashboardPage() {
     } finally {
       setLoading(false);
     }
+  }
+
+  async function generateEventToken() {
+    setTokenLoading(true);
+    try {
+      const data: any = await apiFetch("/auth/event-token", { method: "POST" });
+      setEventToken(data.access_token);
+    } catch (err: any) {
+      alert(err.message || "Erro ao gerar token");
+    } finally {
+      setTokenLoading(false);
+    }
+  }
+
+  async function copyToken() {
+    if (!eventToken) return;
+    await navigator.clipboard.writeText(eventToken);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
   }
 
   useEffect(() => { load(); }, []);
@@ -65,6 +88,37 @@ export default function DashboardPage() {
           </Card>
         ))}
       </div>
+
+      <Card className="border-2 border-dashed border-primary/30 bg-primary/5">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-lg">
+            <Key className="w-5 h-5" />
+            Token do Fotógrafo
+          </CardTitle>
+          <p className="text-sm text-muted-foreground">
+            Gere um token valido por 12h para o uploader do fotografo. Cole no arquivo .env do PC do fotografo.
+          </p>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          {eventToken ? (
+            <div className="space-y-3">
+              <div className="flex items-center gap-2">
+                <code className="flex-1 bg-muted p-3 rounded-lg text-xs break-all font-mono">{eventToken}</code>
+                <Button size="icon" variant="outline" onClick={copyToken} title="Copiar token">
+                  {copied ? <Check className="w-4 h-4 text-green-500" /> : <Copy className="w-4 h-4" />}
+                </Button>
+              </div>
+              <p className="text-xs text-muted-foreground">
+                Valido por 12 horas. Guarde em local seguro — nao sera exibido novamente.
+              </p>
+            </div>
+          ) : (
+            <Button onClick={generateEventToken} disabled={tokenLoading}>
+              {tokenLoading ? "Gerando..." : "Gerar Token do Evento"}
+            </Button>
+          )}
+        </CardContent>
+      </Card>
 
       {stats?.active_event && (
         <Card className="bg-gradient-to-r from-blue-600 to-purple-600 text-white border-0 shadow-lg shadow-purple-500/20">

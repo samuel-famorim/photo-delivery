@@ -5,7 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from ...core.config import get_settings
 from ...core.database import get_db
-from ...core.security import create_access_token, create_refresh_token, verify_password
+from ...core.security import create_access_token, create_event_token, create_refresh_token, verify_password
 from ...models.user import User
 from ...schemas.user import LoginRequest, TokenRefresh, TokenResponse, UserResponse
 from ..deps import get_current_user
@@ -47,3 +47,14 @@ async def refresh(body: TokenRefresh):
 @router.get("/me", response_model=UserResponse)
 async def me(current_user: User = Depends(get_current_user)):
     return current_user
+
+
+@router.post("/event-token")
+async def generate_event_token(current_user: User = Depends(get_current_user)):
+    """Generate a long-lived token for the photographer uploader (lasts 12h)."""
+    token = create_event_token(current_user.id)
+    return {
+        "access_token": token,
+        "expires_in_minutes": settings.EVENT_TOKEN_EXPIRE_MINUTES,
+        "note": "Token valido por 12h. Use este token no uploader do fotografo.",
+    }

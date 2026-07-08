@@ -102,7 +102,7 @@ class PhotoUploader(FileSystemEventHandler):
                         timeout=30,
                     )
 
-                if res.status == 200:
+                if res.status_code == 200:
                     data = res.json()
                     self.uploaded += 1
                     print(f"{GREEN}✓ OK{RESET} — {data.get('session_code', '?')} ({data.get('total_session_photos', '?')} fotos)")
@@ -112,11 +112,11 @@ class PhotoUploader(FileSystemEventHandler):
                         self._move_processed(path)
 
                     return
-                elif res.status == 400:
+                elif res.status_code == 400:
                     data = res.json()
                     print(f"{RED}✗ {data.get('detail', 'Erro')}{RESET}")
                     return
-                elif res.status == 401:
+                elif res.status_code == 401:
                     print(f"{RED}✗ Token inválido. Verifique API_TOKEN no .env{RESET}")
                     return
                 else:
@@ -174,7 +174,7 @@ def main():
     print(f"{CYAN}Testando conexão...{RESET}", end=" ", flush=True)
     try:
         res = requests.get(f"{API_URL}/api/v1/auth/me", headers={"Authorization": f"Bearer {API_TOKEN}"}, timeout=10)
-        if res.status == 200:
+        if res.status_code == 200:
             user = res.json()
             print(f"{GREEN}✓ Conectado como {user.get('name', '?')}{RESET}")
         else:

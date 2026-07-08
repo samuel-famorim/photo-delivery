@@ -28,6 +28,12 @@ def create_access_token(subject: str | Any, expires_delta: timedelta | None = No
     return jwt.encode(to_encode, settings.SECRET_KEY, algorithm="HS256")
 
 
+def create_event_token(subject: str | Any) -> str:
+    expire = datetime.now(timezone.utc) + timedelta(minutes=settings.EVENT_TOKEN_EXPIRE_MINUTES)
+    to_encode = {"exp": expire, "sub": str(subject), "type": "event"}
+    return jwt.encode(to_encode, settings.SECRET_KEY, algorithm="HS256")
+
+
 def create_refresh_token(subject: str | Any) -> str:
     expire = datetime.now(timezone.utc) + timedelta(days=settings.REFRESH_TOKEN_EXPIRE_DAYS)
     to_encode = {"exp": expire, "sub": str(subject), "type": "refresh"}
